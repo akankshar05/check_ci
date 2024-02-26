@@ -14,6 +14,11 @@ jobs:
 
       - name: Clone repository
         run: git clone git@github.com:akankshar05/_gh_pages.git
+      - name: cd _gh_pages
+        run: |
+          cd _gh_pages
+          ls -a
+
        
       - name: nojekyll
         if: ${{ github.event_name == 'push' }}
