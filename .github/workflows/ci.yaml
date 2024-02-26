@@ -32,7 +32,10 @@ jobs:
       - name: cd _gh_pages
         run: |
           cd _gh_pages
+          touch index.html
+          cp performance_report.html index.html 
           ls -a
+          cat index.html
 
        
       - name: nojekyll
