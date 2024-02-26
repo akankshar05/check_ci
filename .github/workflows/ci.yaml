@@ -18,7 +18,7 @@ jobs:
       - name: nojekyll
         if: ${{ github.event_name == 'push' }}
         run: |
-          touch _gh-pages/.nojekyll
+          touch _gh_pages/.nojekyll
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' }}
