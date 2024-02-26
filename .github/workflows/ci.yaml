@@ -11,7 +11,7 @@ jobs:
         with:
             host: github.com
             private-key: ${{ secrets.PRIV_KEY }}
-            
+
       - name: Clone repository
         run: git clone git@github.com:akankshar05/_gh_pages.git
        
@@ -23,3 +23,4 @@ jobs:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: _gh_pages/
           force_orphan: true
+
