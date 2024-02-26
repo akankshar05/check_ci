@@ -1,26 +1,23 @@
-name: Update Time
+name: CI Workflow
+on: push
 
-on:
-  push:
-    branches:
-      - 'main'
-      - 'Release*'
 
 jobs:
-  update-time:
+
+  clone:
+    name: Clone
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Setup SSH
+        uses: MrSquaare/ssh-setup-action@v1
         with:
-          node-version: '14'
+            host: github.com
+            private-key: ${{ secrets.PRIV_KEY }}
 
-      - name: Install dependencies
-        run: npm install
+      - name: Clone repository
+        run: git clone git@github.com:akankshar05/performance_report.git
 
-      - name: Update time in HTML
-        run: node update-time.js
+      - name: cd to wht
+        run: |
+          cd wht
+          pwd
