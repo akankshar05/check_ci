@@ -18,6 +18,7 @@ jobs:
         run: |
           cd _gh_pages
           ls -a
+          cat index.html
 
        
       - name: nojekyll
