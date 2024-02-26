@@ -1,10 +1,10 @@
-name: CI Workflow
-on: push
+# name: CI Workflow
+# on: push
 
 
-jobs:
+# jobs:
 
-#   clone:
+# #   clone:
 #     name: Clone
 #     runs-on: ubuntu-latest
 #     steps:
@@ -23,6 +23,32 @@ jobs:
 #           pwd
 
 
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install  # Adjust this based on your project setup
+
+      - name: Build
+        run: npm run build  # Adjust this based on your project setup
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -30,5 +56,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ./docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs  # Adjust this based on your project setup
