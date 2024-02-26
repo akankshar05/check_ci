@@ -24,7 +24,7 @@ jobs:
 
       - name: copy files
         run: |
-          cp -r ${{ github.workspace }}/wht/samples/profiles-performace-report/output/dev/reports/perf* ${{ github.workspace }}/_gh_pages
+          cp -r ${{ github.workspace }}/wht/samples/profiles-performace-report/output/dev/reports/perf*/* ${{ github.workspace }}/_gh_pages
           cd _gh_pages
           ls -a
     
