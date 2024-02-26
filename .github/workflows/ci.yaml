@@ -1,60 +1,21 @@
-# name: CI Workflow
-# on: push
-
-
-# jobs:
-
-# #   clone:
-#     name: Clone
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Setup SSH
-#         uses: MrSquaare/ssh-setup-action@v1
-#         with:
-#             host: github.com
-#             private-key: ${{ secrets.PRIV_KEY }}
-
-#       - name: Clone repository
-#         run: git clone git@github.com:akankshar05/wht.git
-
-#       - name: cd to wht
-#         run: |
-#           cd wht
-#           pwd
-
-
 name: Build and Deploy
-
-on:
-  push:
-    branches:
-      - main  # Change this to your main branch
-
+on: [push]
+permissions:
+  contents: write
 jobs:
-  build:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          node-version: 14
-
-      - name: Install dependencies
-        run: npm install  # Adjust this based on your project setup
-
-      - name: Build
-        run: npm run build  # Adjust this based on your project setup
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs  # Adjust this based on your project setup
+          folder: docs # The folder the action should deploy.
