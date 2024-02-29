@@ -16,7 +16,7 @@ jobs:
       #   run: git clone git@github.com:akankshar05/_gh_pages.git
       - name: Clone repository
         run: git clone git@github.com:akankshar05/wht.git
-      - name: cd _gh_pages
+      - name: cd wht
         run: |
           cd wht
           ls -a
