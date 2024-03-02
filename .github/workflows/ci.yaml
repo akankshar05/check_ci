@@ -20,6 +20,12 @@ jobs:
         run: |
           cd wht
           ls -a
+      - name: add siteconfig.yaml
+        run: |
+          cd ./../../..
+          touch siteconfig.yaml
+          echo ${{ secrets.SF_CRED }} > siteconfig.yaml
+          cat siteconfig.yaml
       - name: create dir
         run: |
           mkdir _gh_pages
