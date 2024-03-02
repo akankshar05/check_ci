@@ -25,7 +25,6 @@ jobs:
           cd ./../../..
           touch siteconfig.yaml
           pwd
-          ls -a
           echo "1"
           echo ${{ secrets.SF_CRED }} > siteconfig.yaml
           echo "2"
