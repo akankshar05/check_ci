@@ -26,7 +26,9 @@ jobs:
           touch siteconfig.yaml
           pwd
           ls -a
+          echo "1"
           echo ${{ secrets.SF_CRED }} > siteconfig.yaml
+          echo "2"
           cat siteconfig.yaml
       - name: create dir
         run: |
