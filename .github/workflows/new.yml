@@ -1,0 +1,234 @@
+
+
+name: Build and Deploy
+on: [push]
+
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        uses: MrSquaare/ssh-setup-action@v1
+        with:
+            host: github.com
+            private-key: ${{ secrets.PRIV_KEY }}
+
+      - name: Set up rudderlabs token for private repos
+        
+        run: |
+          git config --global user.email "2020ucs0109@iitjammu.ac.in"
+          git config --global user.name "akankshar05"
+          git config --global url."https://${{secrets.WHT_TESTS_TOKEN}}:x-oauth-basic@github.com/rudderlabs".insteadOf "https://github.com/rudderlabs"
+          git config --global url."https://${{secrets.WHT_TESTS_TOKEN}}:x-oauth-basic@github.com/akankshar05".insteadOf "https://github.com/akankshar05"
+
+#####################################################################
+      - name: install profiles_rudderstack explicitly
+        run: |
+          SKIP_PB_BIN=true pip install git+https://github.com/rudderlabs/pywht@wht-grpc-0.4.2#subdirectory=profiles_rudderstack
+      - name: Clone wht repository
+        run: git clone -b feat.MAT_OUTPUT_TYPE_IMAGE git@github.com:rudderlabs/wht.git
+      - name: Print Current Directory
+        run: |
+          pwd
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21.6
+      - name: cd to wht
+        run: |
+          cd wht
+          pwd
+      - name: setup GOPRIVATE
+        run: |
+          cd wht
+          pwd
+          go env -w GOPRIVATE=github.com/rudderlabs/*
+      - name: build go file
+        run: |
+          cd wht
+          make build
+      - name: clone other repos
+        run: | 
+          cd wht
+          cd samples
+          git clone -b feat.modify_reports git@github.com:rudderlabs/profiles-performace-report.git
+          cd ..
+          git clone -b feat.GraphModel git@github.com:rudderlabs/profiles-pycorelib.git
+      - name: add siteconfig.yaml
+        run: |
+          cd ./../../..
+          touch siteconfig.yaml
+          pwd
+          echo '${{ secrets.SF_CRED }}' > siteconfig.yaml
+          cat siteconfig.yaml
+      - name: install profiles-pycorelib
+        run: |
+          cd wht
+          pip3 install ./profiles-pycorelib
+
+      - name: print folders
+        run: |
+          cd wht
+          ls
+
+      - name: run the project
+        run: |
+          cd wht
+          ./pb run --migrate_on_load -p ./samples/profiles-performace-report 
+
+      - name: check output created 
+        run: |
+          cd wht
+          cd samples
+          cd profiles-performace-report 
+          ls -a
+
+#####################################################################
+
+      - name: create dir
+        run: |
+          mkdir _gh_pages
+
+      - name: copy files
+        run: |
+          cd _gh_pages
+          previous_folder="$(date +'%Y-%m-%d')"
+          mkdir ${previous_folder}
+          cp -r ${{ github.workspace }}/wht/samples/profiles-performace-report/output/dev/reports/perf*/* ${{ github.workspace }}/_gh_pages/${previous_folder}
+          ls -a
+      - name: clone the gh-pages
+        run: |
+          git clone -b gh-pages git@github.com:rudderlabs/profiles-performace-report.git gh-pages
+          cd gh-pages
+          rm -f ./.nojkyll
+          rm -f ./index.html
+          cd ..
+          cp -r ${{ github.workspace }}/gh-pages/* ${{ github.workspace }}/_gh_pages
+      - name: create index.html
+        run: |
+          cd _gh_pages
+
+          folders=$(ls -d */ | sed 's#/##')
+          var_folders=$(echo $folders | sed 's/ /", "/g')
+          
+          echo '<!DOCTYPE html>
+                <html lang="en">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <title>PPR</title>
+                    <style>
+                      body {
+                        background-color: #f0f0f0;
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 0;
+                        color: #333;
+                      }
+
+                      header {
+                        background-color: #2980b9;
+                        padding: 20px;
+                        text-align: center;
+                        color: #fff;
+                      }
+
+                      section {
+                        padding: 20px;
+                        padding-bottom: 60px; /* Added padding to avoid overlap with the footer */
+                      }
+
+                      footer {
+                        background-color: #2980b9;
+                        padding: 10px;
+                        text-align: center;
+                        color: #fff;
+                        position: fixed;
+                        bottom: 0;
+                        width: 100%;
+                      }
+
+                      .links-list {
+                        list-style-type: none;
+                        padding: 0;
+                        text-align: center;
+                      }
+
+                      .links-list li {
+                        margin: 5px;
+                      }
+
+                      .date-link {
+                        color: #2980b9;
+                        text-decoration: none;
+                        font-weight: bold;
+                        font-size: 30px;
+                      }
+                    </style>
+                    <script>
+                      document.addEventListener("DOMContentLoaded", function () {
+                        var linksList = document.querySelector(".links-list");' > index.html
+          echo "var folders = [\"$var_folders\"];" >> index.html
+          echo '  var linksData = [];
+                  folders.forEach(function (folder) {
+                    var folderPath = "./" + folder + "/";
+                    var htmlFilePath = folderPath + "performance_report.html";
+
+                    var link = {
+                      href: htmlFilePath,
+                      text: folder + " report",
+                    };
+                    linksData.push(link);
+                  });
+
+                  console.log(linksData);
+
+                  linksData.forEach(function (link) {
+                    var listItem = document.createElement("li");
+                    var anchor = document.createElement("a");
+
+                    anchor.href = link.href;
+                    anchor.className = "date-link";
+                    anchor.textContent = link.text;
+
+                    listItem.appendChild(anchor);
+                    linksList.appendChild(listItem);
+                  });
+                });
+              </script>
+            </head>
+
+            <body>
+              <header>
+                <h1>Profiles-Performance-Report</h1>
+              </header>
+
+              <section>
+                <ul class="links-list"></ul>
+              </section>
+
+              <footer>
+                <p>&copy; Copyright 2024, RudderStack.</p>
+              </footer>
+            </body>
+          </html>
+          ' >> index.html
+          cat index.html
+          ls -a
+      - name: nojekyll
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          touch _gh_pages/.nojekyll
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: _gh_pages/
+          force_orphan: true
+
+
+
