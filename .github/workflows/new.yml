@@ -58,7 +58,7 @@ jobs:
       - name: add siteconfig.yaml
         run: |
           cd ./../../..
-          mkdir ./pb
+          mkdir .pb
           cd ./.pb
           touch siteconfig.yaml
           pwd
