@@ -42,7 +42,7 @@ jobs:
       - name: clone the gh-thing 
         run: |
           git clone -b gh-pages git@github.com:akankshar05/check_ci.git gh-pages
-          cp -r ${{ github.workspace }}/pages/* ${{ github.workspace }}/_gh_pages
+          cp -r ${{ github.workspace }}/gh-pages/* ${{ github.workspace }}/_gh_pages
       # - name: cd _gh_pages
       #   run: |
       #     cd _gh_pages
