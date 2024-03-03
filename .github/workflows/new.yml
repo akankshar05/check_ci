@@ -58,6 +58,8 @@ jobs:
       - name: add siteconfig.yaml
         run: |
           cd ./../../..
+          mkdir ./pb
+          cd ./.pb
           touch siteconfig.yaml
           pwd
           echo '${{ secrets.SF_CRED }}' > siteconfig.yaml
