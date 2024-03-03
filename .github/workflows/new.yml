@@ -20,8 +20,7 @@ jobs:
         run: |
           git config --global user.email "2020ucs0109@iitjammu.ac.in"
           git config --global user.name "akankshar05"
-          git config --global url."https://${{secrets.WHT_TESTS_TOKEN}}:x-oauth-basic@github.com/rudderlabs".insteadOf "https://github.com/rudderlabs"
-          git config --global url."https://${{secrets.WHT_TESTS_TOKEN}}:x-oauth-basic@github.com/akankshar05".insteadOf "https://github.com/akankshar05"
+          git config --global url."https://${{secrets.WHT_TESTS_TOKEN}}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 
 #####################################################################
       - name: install profiles_rudderstack explicitly
