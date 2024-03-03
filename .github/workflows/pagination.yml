@@ -1,179 +1,177 @@
-name: Build and Deploy
-on: [push]
-permissions:
-  contents: write
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup SSH
-        uses: MrSquaare/ssh-setup-action@v1
-        with:
-            host: github.com
-            private-key: ${{ secrets.PRIV_KEY }}
+# name: Build and Deploy
+# on: [push]
+# permissions:
+#   contents: write
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup SSH
+#         uses: MrSquaare/ssh-setup-action@v1
+#         with:
+#             host: github.com
+#             private-key: ${{ secrets.PRIV_KEY }}
 
-      # - name: Clone repository
-      #   run: git clone git@github.com:akankshar05/_gh_pages.git
-      - name: Clone repository
-        run: git clone git@github.com:akankshar05/nested_folders.git
-      - name: cd nested_folders
-        run: |
-          cd nested_folders
-          ls -a
-      - name: add siteconfig.yaml
-        run: |
-          cd ./../../..
-          touch siteconfig.yaml
-          pwd
-          echo "1"
-          echo '${{ secrets.SF_CRED }}' > siteconfig.yaml
-          echo "2"
-          cat siteconfig.yaml
-      - name: create dir
-        run: |
-          mkdir _gh_pages
+#       # - name: Clone repository
+#       #   run: git clone git@github.com:akankshar05/_gh_pages.git
+#       - name: Clone repository
+#         run: git clone git@github.com:akankshar05/nested_folders.git
+#       - name: cd nested_folders
+#         run: |
+#           cd nested_folders
+#           ls -a
+#       - name: add siteconfig.yaml
+#         run: |
+#           cd ./../../..
+#           touch siteconfig.yaml
+#           pwd
+#           echo '${{ secrets.SF_CRED }}' > siteconfig.yaml
+#           cat siteconfig.yaml
+#       - name: create dir
+#         run: |
+#           mkdir _gh_pages
 
-      - name: copy files
-        run: |
-          cp -r ${{ github.workspace }}/nested_folders/* ${{ github.workspace }}/_gh_pages
-          cd _gh_pages
-          ls -a
+#       - name: copy files
+#         run: |
+#           cp -r ${{ github.workspace }}/nested_folders/* ${{ github.workspace }}/_gh_pages
+#           cd _gh_pages
+#           ls -a
 
-      - name: clone the gh-thing 
-        run: |
-          git clone -b gh-pages git@github.com:akankshar05/check_ci.git gh-pages
-          cp -r ${{ github.workspace }}/gh-pages/* ${{ github.workspace }}/_gh_pages
-      # - name: cd _gh_pages
-      #   run: |
-      #     cd _gh_pages
-      #     touch index.html
-      #     cp performance_report.html index.html 
-      #     ls -a
-      #     cat index.html
+#       - name: clone the gh-thing 
+#         run: |
+#           git clone -b gh-pages git@github.com:akankshar05/check_ci.git gh-pages
+#           cp -r ${{ github.workspace }}/gh-pages/* ${{ github.workspace }}/_gh_pages
+#       # - name: cd _gh_pages
+#       #   run: |
+#       #     cd _gh_pages
+#       #     touch index.html
+#       #     cp performance_report.html index.html 
+#       #     ls -a
+#       #     cat index.html
 
-      - name: create index.html
-        run: |
-          cd _gh_pages
+#       - name: create index.html
+#         run: |
+#           cd _gh_pages
 
-          folders=$(ls -d */ | sed 's#/##')
-          var_folders=$(echo $folders | sed 's/ /", "/g')
+#           folders=$(ls -d */ | sed 's#/##')
+#           var_folders=$(echo $folders | sed 's/ /", "/g')
           
-          echo '<!DOCTYPE html>
-                <html lang="en">
-                  <head>
-                    <meta charset="UTF-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                    <title>PPR</title>
-                    <style>
-                      body {
-                        background-color: #f0f0f0;
-                        font-family: Arial, sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        color: #333;
-                      }
+#           echo '<!DOCTYPE html>
+#                 <html lang="en">
+#                   <head>
+#                     <meta charset="UTF-8" />
+#                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+#                     <title>PPR</title>
+#                     <style>
+#                       body {
+#                         background-color: #f0f0f0;
+#                         font-family: Arial, sans-serif;
+#                         margin: 0;
+#                         padding: 0;
+#                         color: #333;
+#                       }
 
-                      header {
-                        background-color: #2980b9;
-                        padding: 20px;
-                        text-align: center;
-                        color: #fff;
-                      }
+#                       header {
+#                         background-color: #2980b9;
+#                         padding: 20px;
+#                         text-align: center;
+#                         color: #fff;
+#                       }
 
-                      section {
-                        padding: 20px;
-                        padding-bottom: 60px; /* Added padding to avoid overlap with the footer */
-                      }
+#                       section {
+#                         padding: 20px;
+#                         padding-bottom: 60px; /* Added padding to avoid overlap with the footer */
+#                       }
 
-                      footer {
-                        background-color: #2980b9;
-                        padding: 10px;
-                        text-align: center;
-                        color: #fff;
-                        position: fixed;
-                        bottom: 0;
-                        width: 100%;
-                      }
+#                       footer {
+#                         background-color: #2980b9;
+#                         padding: 10px;
+#                         text-align: center;
+#                         color: #fff;
+#                         position: fixed;
+#                         bottom: 0;
+#                         width: 100%;
+#                       }
 
-                      .links-list {
-                        list-style-type: none;
-                        padding: 0;
-                        text-align: center;
-                      }
+#                       .links-list {
+#                         list-style-type: none;
+#                         padding: 0;
+#                         text-align: center;
+#                       }
 
-                      .links-list li {
-                        margin: 5px;
-                      }
+#                       .links-list li {
+#                         margin: 5px;
+#                       }
 
-                      .date-link {
-                        color: #2980b9;
-                        text-decoration: none;
-                        font-weight: bold;
-                        font-size: 30px;
-                      }
-                    </style>
-                    <script>
-                      document.addEventListener("DOMContentLoaded", function () {
-                        var linksList = document.querySelector(".links-list");' > index.html
-          echo "var folders = [\"$var_folders\"];" >> index.html
-          echo '  var linksData = [];
-                  folders.forEach(function (folder) {
-                    var folderPath = "./" + folder + "/";
-                    var htmlFilePath = folderPath + "perf.html";
+#                       .date-link {
+#                         color: #2980b9;
+#                         text-decoration: none;
+#                         font-weight: bold;
+#                         font-size: 30px;
+#                       }
+#                     </style>
+#                     <script>
+#                       document.addEventListener("DOMContentLoaded", function () {
+#                         var linksList = document.querySelector(".links-list");' > index.html
+#           echo "var folders = [\"$var_folders\"];" >> index.html
+#           echo '  var linksData = [];
+#                   folders.forEach(function (folder) {
+#                     var folderPath = "./" + folder + "/";
+#                     var htmlFilePath = folderPath + "performance_report.html";
 
-                    var link = {
-                      href: htmlFilePath,
-                      text: folder + " report",
-                    };
-                    linksData.push(link);
-                  });
+#                     var link = {
+#                       href: htmlFilePath,
+#                       text: folder + " report",
+#                     };
+#                     linksData.push(link);
+#                   });
 
-                  console.log(linksData);
+#                   console.log(linksData);
 
-                  linksData.forEach(function (link) {
-                    var listItem = document.createElement("li");
-                    var anchor = document.createElement("a");
+#                   linksData.forEach(function (link) {
+#                     var listItem = document.createElement("li");
+#                     var anchor = document.createElement("a");
 
-                    anchor.href = link.href;
-                    anchor.className = "date-link";
-                    anchor.textContent = link.text;
+#                     anchor.href = link.href;
+#                     anchor.className = "date-link";
+#                     anchor.textContent = link.text;
 
-                    listItem.appendChild(anchor);
-                    linksList.appendChild(listItem);
-                  });
-                });
-              </script>
-            </head>
+#                     listItem.appendChild(anchor);
+#                     linksList.appendChild(listItem);
+#                   });
+#                 });
+#               </script>
+#             </head>
 
-            <body>
-              <header>
-                <h1>Profiles-Performance-Report</h1>
-              </header>
+#             <body>
+#               <header>
+#                 <h1>Profiles-Performance-Report</h1>
+#               </header>
 
-              <section>
-                <ul class="links-list"></ul>
-              </section>
+#               <section>
+#                 <ul class="links-list"></ul>
+#               </section>
 
-              <footer>
-                <p>&copy; Copyright 2024, RudderStack.</p>
-              </footer>
-            </body>
-          </html>
-          ' >> index.html
-          cat index.html
-          ls -a
-      - name: nojekyll
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          touch _gh_pages/.nojekyll
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' }}
-        with:
-          publish_branch: gh-pages
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: _gh_pages/
-          force_orphan: true
+#               <footer>
+#                 <p>&copy; Copyright 2024, RudderStack.</p>
+#               </footer>
+#             </body>
+#           </html>
+#           ' >> index.html
+#           cat index.html
+#           ls -a
+#       - name: nojekyll
+#         if: ${{ github.event_name == 'push' }}
+#         run: |
+#           touch _gh_pages/.nojekyll
+#       - name: Deploy
+#         uses: peaceiris/actions-gh-pages@v3
+#         if: ${{ github.event_name == 'push' }}
+#         with:
+#           publish_branch: gh-pages
+#           github_token: ${{ secrets.GH_TOKEN }}
+#           publish_dir: _gh_pages/
+#           force_orphan: true
 
 
 
