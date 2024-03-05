@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Model Run Report</title>
+    <style>
+      .table-container {
+        flex-direction: column;
+      }
+      .table-container {
+        margin-bottom: 3em;
+        align-items: center;
+      }
+
+      .table-container table {
+        border-collapse: collapse;
+        width: 60%;
+      }
+
+      .table-container th,
+      .table-container td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 0.5em;
+      }
+
+      .table-container th {
+        background-color: #f2f2f2;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1em auto;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      h1 {
+        color: #4caf50;
+        margin: 0.5em 0;
+      }
+      h2 {
+        color: #333333;
+        margin-bottom: 1em;
+      }
+      .section {
+        background-color: #f2f2f2;
+        border-radius: 8px;
+        padding: 1em;
+        margin: 1em 0;
+        text-align: left;
+      }
+      h3 {
+        color: #4caf50;
+        margin: 0;
+      }
+      p {
+        margin: 0.5em 0;
+        color: #666666;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Profiles Benchmarking Report</h3>
+    <div>
+      Rudderstack Profiles Builder offers a comprehensive solution by unifying
+      warehouse data into a single table, enabling you to gain a holistic
+      360-degree view of your customers. This eliminates the need for complex
+      query formulation and modeling efforts when dealing with identity
+      resolution and creating a customer 360 view, ultimately expediting the
+      delivery of high-impact projects.
+      <br />
+      It is important for customers to understand how Profiles runtime and cost
+      grows with size of data. In order to answer these questions we compared
+      the profiles execution time on different dataset sizes. Our primary
+      objective was to provide our customers with a valuable estimation of their
+      project requirements based on different dataset sizes.
+
+      <br />
+      This report delves into the performance evaluation of our Profiles Builder
+      tool across various models and warehouse configurations.
+    </div>
+    <br />
+    <br />
+    <h3>What data did we query on?</h3>
+    <div>
+      The datasets used for benchmarking were generated internally for testing
+      purposes. We assume that these datasets accurately simulate real-world
+      scenarios and that their characteristics adequately reflect the diversity
+      and complexity of data encountered by our customers.
+    </div>
+    <br />
+    <h3>Data Generation</h3>
+    <div>
+      We generated multiple datasets of different sizes in our snowflake
+      warehouse. Each dataset has 7 tables in a Snowflake schema, representing
+      the activities of an imaginary retailer, including cart interactions,
+      order history, and customer identities. We used existing real data from
+      shopify source and extended this data to desired size by hashing,
+      time-shifting and randomization.
+    </div>
+    <br />
+    <h3>Assumptions:</h3>
+    <div>
+      Cost Estimation: Snowflake customers are billed for each second that
+      virtual warehouses are running, with a minimum 60 second charge each time
+      one is resumed. Snowflake uses credits to charge for the processing time
+      used by each warehouse. When a warehouse is suspended, it does not use any
+      credits.
+    </div>
+    <br />
+    <div>
+      If two queries run concurrently on the warehouse for the same 20 minutes,
+      Snowflake will bill for 20 minutes. More information can be found on
+      <a
+        href="https://docs.snowflake.com/en/user-guide/cost-understanding-compute"
+        ><span>snowflake website</span></a
+      >
+    </div>
+    <br />
+    <div>
+      For our computation we have used a snowflake warehouse of size x-small.
+      For this warehouse size snowflake
+      <a
+        href="https://docs.snowflake.com/en/user-guide/cost-understanding-compute"
+        ><span \>charges</span></a
+      >
+      1 credit per hour.
+    </div>
+    <br />
+    <div>
+      The cost per credit will vary based on the plan you are on (Standard,
+      Enterprise etc.) On demand customers will generally pay $2/credit for
+      Standard, and $3/credit on Enterprise For our calculations we have
+      considered the cost of $2 per credit.
+    </div>
+    <br />
+    <br />
+    <h3>Project Description</h3>
+    <div>
+      For our benchmarking study, we ran the ID Stitcher and Shopify Feature
+      Table models on datasets of different sizes. Project can be accessed
+      <a
+        href="https://github.com/rudderlabs/rudderstack-profiles-shopify-features"
+        ><span \>here</span></a
+      >
+      <br />
+      Our assessment encompassed the following key metrics:
+      <br />
+      1. ID Stitcher:
+      <br />
+      Total of 6 tables were used as an input and acts as ID edge tables
+      <br />
+      IDs were stitched based on 4 different id types which are *annonymous_id*,
+      user_ id, cart_token and email.
+      <br />
+      We recorded the total count of unique IDs before the ID Stitcher process
+      and we documented the total count of uniquely generated main
+      IDs(rudder_ids) after the stitching process.
+      <br />
+      <img alt="" src="./Material_user_identities_4aea7751_2047.png" />
+      <br />
+      <br />
+      2. Shopify Feature Table Model:
+      <br />
+      Our Feature Table Model comprises a set of 53 distinct features about
+      users, including attributes like days_since_last_seen,
+      days_since_last_purchase, and many more. It also encompasses data on
+      orders (e.g., total_refund, median_transaction_value) and cart activities
+      (carts_in_past_7_days, total_carts, etc.).
+      <br />
+      <img alt="" src="./Material_merged_user_features_4aea7751_2047.png" />
+
+      <br />
+      We separately measured the total time taken by the warehouse to execute
+      all the queries associated with the ID Stitcher and Feature Table Model
+      processes.
+    </div>
+    <br />
+    <br />
+    <h3>RESULTS:</h3>
+    <br />
+
+    <script src="Material_feature_table_runtime_f35fd721_2047.js"></script>
+    <script src="Material_feature_table_runtime_2_4452ebda_2047.js"></script>
+    <script src="Material_id_stitcher_runtime_13981c1c_2047.js"></script>
+    <script src="Material_id_stitcher_runtime_2_cc78735d_2047.js"></script>
+    <script src="Material_input_table_size_9772fe05_2047.js"></script>
+    <script src="Material_input_table_size_2_bbf7acbc_2047.js"></script>
+    <script src="Material_total_events_1fde553a_2047.js"></script>
+    <script src="Material_total_events_2_4ac9dcc2_2047.js"></script>
+
+    <div class="container">
+      <script>
+        function renderTablesIS(
+          jsonFileNames_input_table,
+          jsonFileNamesIS_run_time,
+          tableName
+        ) {
+          const containerDiv = document.createElement("div");
+          containerDiv.classList.add("table-container");
+          const table = document.createElement("table");
+          const heading = document.createElement("h3");
+          heading.textContent = tableName;
+          containerDiv.appendChild(heading);
+
+          const headerRow = document.createElement("tr");
+
+          jsonFileNames_input_table[0].Columns.forEach((column) => {
+            const th = document.createElement("th");
+            th.textContent = column;
+            headerRow.appendChild(th);
+          });
+
+          jsonFileNamesIS_run_time[0].Columns.forEach((column) => {
+            const th = document.createElement("th");
+            th.textContent = column;
+            headerRow.appendChild(th);
+          });
+          const th = document.createElement("th");
+          th.textContent = "CREDIS_SPENT";
+          headerRow.appendChild(th);
+
+          table.appendChild(headerRow);
+
+          const maxRows = Math.max(
+            jsonFileNames_input_table.length,
+            jsonFileNamesIS_run_time.length
+          );
+          console.log(maxRows);
+
+          for (let i = 0; i < maxRows; i++) {
+            var row = document.createElement("tr");
+
+            console.log(i, jsonFileNames_input_table[i]);
+            let j = 0;
+            jsonFileNames_input_table[i].Results[j].forEach((value) => {
+              console.log(value);
+              const td = document.createElement("td");
+              td.textContent = value;
+              row.appendChild(td);
+            });
+
+            jsonFileNamesIS_run_time[i].Results[j].forEach((value) => {
+              const td = document.createElement("td");
+              td.textContent = value;
+              row.appendChild(td);
+            });
+            const td = document.createElement("td");
+            td.textContent = (
+              jsonFileNamesIS_run_time[i].Results / 3600
+            ).toFixed(4);
+            row.appendChild(td);
+            table.appendChild(row);
+          }
+
+          containerDiv.appendChild(table);
+
+          const imageIS = document.createElement("img");
+          imageIS.src = "./Material_ids_graph_c65b15e4_2047.png";
+          containerDiv.appendChild(imageIS);
+
+          document.body.appendChild(containerDiv);
+        }
+
+        function renderTablesFT(
+          jsonFileNames_total_events,
+          jsonFileNames_input_table,
+          jsonFileNamesFT_run_time,
+          tableName
+        ) {
+          const containerDiv = document.createElement("div");
+          containerDiv.classList.add("table-container");
+
+          const table = document.createElement("table");
+
+          const heading = document.createElement("h3");
+          heading.textContent = tableName;
+          containerDiv.appendChild(heading);
+
+          const headerRow = document.createElement("tr");
+
+          jsonFileNames_total_events[0].Columns.forEach((column) => {
+            const th = document.createElement("th");
+            th.textContent = column;
+            headerRow.appendChild(th);
+          });
+
+          const th1 = document.createElement("th");
+          th1.textContent = "NO_OF_USERS";
+          headerRow.appendChild(th1);
+          const th2 = document.createElement("th");
+          th2.textContent = "TOTAL_EVENTS_ATTRIBUTES";
+          headerRow.appendChild(th2);
+          const th3 = document.createElement("th");
+          th3.textContent = "TOTAL_FEATURES";
+          headerRow.appendChild(th3);
+
+          jsonFileNamesFT_run_time[0].Columns.forEach((column) => {
+            const th = document.createElement("th");
+            th.textContent = column;
+            headerRow.appendChild(th);
+          });
+
+          const th = document.createElement("th");
+          th.textContent = "CREDIS_SPENT";
+          headerRow.appendChild(th);
+
+          table.appendChild(headerRow);
+
+          const maxRows = Math.max(
+            jsonFileNames_total_events.length,
+            jsonFileNames_input_table.length
+          );
+
+          for (let i = 0; i < maxRows; i++) {
+            const row = document.createElement("tr");
+            let j = 0;
+            jsonFileNames_total_events[i].Results[j].forEach((value) => {
+              const td = document.createElement("td");
+              td.textContent = value;
+              row.appendChild(td);
+            });
+
+            const td1 = document.createElement("td");
+            td1.textContent = jsonFileNames_input_table[i].Results[0][0];
+            row.appendChild(td1);
+            const td2 = document.createElement("td");
+            td2.textContent = 176;
+            row.appendChild(td2);
+            const td3 = document.createElement("td");
+            td3.textContent = 53;
+            row.appendChild(td3);
+
+            jsonFileNamesFT_run_time[i].Results[j].forEach((value) => {
+              const td = document.createElement("td");
+              td.textContent = value;
+              row.appendChild(td);
+            });
+
+            const td = document.createElement("td");
+            td.textContent = (
+              jsonFileNamesFT_run_time[i].Results / 3600
+            ).toFixed(4);
+            row.appendChild(td);
+
+            table.appendChild(row);
+          }
+
+          containerDiv.appendChild(table);
+
+          const imageFT = document.createElement("img");
+          imageFT.src = "./Material_ft_graph_6316f1d5_2047.png";
+          containerDiv.appendChild(imageFT);
+
+          document.body.appendChild(containerDiv);
+        }
+
+        window.onload = function () {
+          const jsonFileNames_input_table = [
+            Material_input_table_size_9772fe05_2047,
+            Material_input_table_size_2_bbf7acbc_2047,
+          ];
+          const jsonFileNamesIS_run_time = [
+            Material_id_stitcher_runtime_13981c1c_2047,
+            Material_id_stitcher_runtime_2_cc78735d_2047,
+          ];
+
+          const jsonFileNames_total_events = [
+            Material_total_events_1fde553a_2047,
+            Material_total_events_2_4ac9dcc2_2047,
+          ];
+          const jsonFileNamesFT_run_time = [
+            Material_feature_table_runtime_f35fd721_2047,
+            Material_feature_table_runtime_2_4452ebda_2047,
+          ];
+
+          const tableNameIS = "ID-Resolution";
+          const tableNameFT = "Feature-Table";
+
+          renderTablesIS(
+            jsonFileNames_input_table,
+            jsonFileNamesIS_run_time,
+            tableNameIS
+          );
+
+          renderTablesFT(
+            jsonFileNames_total_events,
+            jsonFileNames_input_table,
+            jsonFileNamesFT_run_time,
+            tableNameFT
+          );
+        };
+      </script>
+    </div>
+  </body>
+</html>

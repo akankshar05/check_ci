@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>PPR</title>
+          <style>
+            body {
+              background-color: #f0f0f0;
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+              color: #333;
+            }
+
+            header {
+              background-color: #2980b9;
+              padding: 20px;
+              text-align: center;
+              color: #fff;
+            }
+
+            section {
+              padding: 20px;
+              padding-bottom: 60px; /* Added padding to avoid overlap with the footer */
+            }
+
+            footer {
+              background-color: #2980b9;
+              padding: 10px;
+              text-align: center;
+              color: #fff;
+              position: fixed;
+              bottom: 0;
+              width: 100%;
+            }
+
+            .links-list {
+              list-style-type: none;
+              padding: 0;
+              text-align: center;
+            }
+
+            .links-list li {
+              margin: 5px;
+            }
+
+            .date-link {
+              color: #2980b9;
+              text-decoration: none;
+              font-weight: bold;
+              font-size: 30px;
+            }
+          </style>
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              var linksList = document.querySelector(".links-list");
+var folders = ["2024-03-03", "2024-03-05"];
+  var linksData = [];
+        folders.forEach(function (folder) {
+          var folderPath = "./" + folder + "/";
+          var htmlFilePath = folderPath + "performance_report.html";
+
+          var link = {
+            href: htmlFilePath,
+            text: folder + " report",
+          };
+          linksData.push(link);
+        });
+
+        console.log(linksData);
+
+        linksData.forEach(function (link) {
+          var listItem = document.createElement("li");
+          var anchor = document.createElement("a");
+
+          anchor.href = link.href;
+          anchor.className = "date-link";
+          anchor.textContent = link.text;
+
+          listItem.appendChild(anchor);
+          linksList.appendChild(listItem);
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Profiles-Performance-Report</h1>
+    </header>
+
+    <section>
+      <ul class="links-list"></ul>
+    </section>
+
+    <footer>
+      <p>&copy; Copyright 2024, RudderStack.</p>
+    </footer>
+  </body>
+</html>
+

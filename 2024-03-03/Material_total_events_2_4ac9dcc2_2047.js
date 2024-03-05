@@ -1,0 +1,1 @@
+var Material_total_events_2_4ac9dcc2_2047 = {"Columns":["TOTAL_ROWS"],"Results":[[38747136]]}
